@@ -3,6 +3,7 @@
 
 VERDE='\033[0;32m'
 AZUL='\033[0;34m'
+VERMELHO='\033[0;31m'
 RESET='\033[0m'
 
 # Verificação de conflitos
@@ -16,14 +17,13 @@ for app in "${conflitos[@]}"; do
     fi
 done
 
-
-# Identifica o usuário real para não instalar tudo na pasta do Root
+# Identifica o usuário real
 REAL_USER=${SUDO_USER:-$USER}
 USER_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
 
 echo -e "${AZUL}Iniciando instalação do EcoPower...${RESET}"
 
-# 1. Instalar dependências básicas do Sistema
+# 1. Instalar dependências básicas
 echo "Instalando dependências via APT..."
 sudo apt update && sudo apt install -y brightnessctl curl git python3
 
@@ -34,7 +34,7 @@ if ! command -v envycontrol &> /dev/null; then
     sudo chmod +x /usr/local/bin/envycontrol
 fi
 
-# 3. Instalar auto-cpufreq e ativar o Daemon
+# 3. Instalar auto-cpufreq
 if ! command -v auto-cpufreq &> /dev/null; then
     echo "Instalando auto-cpufreq..."
     git clone https://github.com/AdnanHodzic/auto-cpufreq.git /tmp/auto-cpufreq-repo
@@ -44,30 +44,27 @@ else
     sudo auto-cpufreq --install
 fi
 
-# 4. Configurar o script principal
+# 4. Configurar binários (Removendo extensões para padrão Linux)
 chmod +x ecopower.sh
-sudo cp ecopower.sh /usr/local/bin/ecopower
 chmod +x ecopower-menu.sh
+sudo cp ecopower.sh /usr/local/bin/ecopower
 sudo cp ecopower-menu.sh /usr/local/bin/ecopower-menu
 
-# 5. Criar atalhos de Desktop na Home do Usuário Real
+# 5. Criar atalho de Desktop corrigido
 APP_DIR="$USER_HOME/.local/share/applications"
 mkdir -p "$APP_DIR"
-
-echo "Criando atalhos em $APP_DIR..."
 
 cat <<EOF > "$APP_DIR/ecopower.desktop"
 [Desktop Entry]
 Name=EcoPower Control
 Comment=Gerenciar Energia e GPU
-Exec=gnome-terminal -- bash -c "/usr/local/bin/ecopower-menu.sh; exec bash"
+Exec=gnome-terminal -- bash -c "sudo /usr/local/bin/ecopower-menu; exec bash"
 Icon=power-profile-balanced-symbolic
 Terminal=true
 Type=Application
 EOF
 
-# Ajusta as permissões para o seu usuário ser o dono dos ícones
 chown -R "$REAL_USER":"$REAL_USER" "$APP_DIR"/ecopower*
 update-desktop-database "$APP_DIR"
 
-echo -e "${VERDE}EcoPower instalado com sucesso! Procure por 'EcoPower' no menu de apps.${RESET}"
+echo -e "${VERDE}EcoPower instalado com sucesso!${RESET}"

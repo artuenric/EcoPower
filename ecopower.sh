@@ -1,5 +1,5 @@
 #!/bin/bash
-# EcoPower
+# EcoPower Engine
 
 VERDE='\033[0;32m'
 AZUL='\033[0;34m'
@@ -13,36 +13,26 @@ fi
 
 case "$1" in
     --eco)
-        echo -e "${VERDE}Modo ECO: Desligando a GPU, limitando CPU e brilho...${RESET}"
-        envycontrol -s integrated
+        echo -e "${VERDE}Modo ECO: Desligando a GPU, limitando CPU...${RESET}"
+        envycontrol -s integrated --force
         auto-cpufreq --force powersave
         auto-cpufreq --turbo never
         brightnessctl s 20%
-        
-	echo -e "${AZUL}Feito! É necessário reiniciar para desligar a GPU.${RESET}"
-	read -p "Deseja reiniciar o sistema agora? (s/n): " confirm
-        if [[ "$confirm" == [sS] ]]; then
-            systemctl reboot
-        fi
+        read -p "Reiniciar agora? (s/n): " confirm
+        [[ "$confirm" == [sS] ]] && systemctl reboot
         ;;
-        
     --power)
-        echo -e "${AZUL}Modo POWER: Ativando Híbrido, Performance e Turbo...${RESET}"
-        envycontrol -s hybrid
+        echo -e "${AZUL}Modo POWER: Ativando GPU Híbrida...${RESET}"
+        envycontrol -s hybrid --force
         auto-cpufreq --force performance
         auto-cpufreq --turbo auto
         brightnessctl s 80%
-        echo -e "${VERDE}Feito! É necessário reiniciar para habilitar a GPU.${RESET}"
-        read -p "Deseja reiniciar o sistema agora? (s/n): " confirm
-        if [[ "$confirm" == [sS] ]]; then
-            systemctl reboot
-        fi
+        read -p "Reiniciar agora? (s/n): " confirm
+        [[ "$confirm" == [sS] ]] && systemctl reboot
         ;;
-
     --status)
         auto-cpufreq --stats
         ;;
-
     *)
         echo "Uso: sudo ecopower [ --eco | --power | --status ]"
         ;;
