@@ -47,6 +47,8 @@ fi
 # 4. Configurar o script principal
 chmod +x ecopower.sh
 sudo cp ecopower.sh /usr/local/bin/ecopower
+chmod +x ecopower-menu.sh
+sudo cp ecopower-menu.sh /usr/local/bin/ecopower-menu
 
 # 5. Criar atalhos de Desktop na Home do Usuário Real
 APP_DIR="$USER_HOME/.local/share/applications"
