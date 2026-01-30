@@ -54,22 +54,12 @@ mkdir -p "$APP_DIR"
 
 echo "Criando atalhos em $APP_DIR..."
 
-cat <<EOF > "$APP_DIR/ecopower-eco.desktop"
+cat <<EOF > "$APP_DIR/ecopower.desktop"
 [Desktop Entry]
-Name=EcoPower ECO
-Comment=Maximizar Bateria
-Exec=gnome-terminal -- bash -c "sudo /usr/local/bin/ecopower --eco; exec bash"
-Icon=power-profile-power-saver-symbolic
-Terminal=true
-Type=Application
-EOF
-
-cat <<EOF > "$APP_DIR/ecopower-power.desktop"
-[Desktop Entry]
-Name=EcoPower POWER
-Comment=Performance Máxima
-Exec=gnome-terminal -- bash -c "sudo /usr/local/bin/ecopower --power; exec bash"
-Icon=power-profile-performance-symbolic
+Name=EcoPower Control
+Comment=Gerenciar Energia e GPU
+Exec=gnome-terminal -- bash -c "/usr/local/bin/ecopower-menu.sh; exec bash"
+Icon=power-profile-balanced-symbolic
 Terminal=true
 Type=Application
 EOF
